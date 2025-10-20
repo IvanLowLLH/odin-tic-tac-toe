@@ -1,5 +1,5 @@
 function Cell() {
-    let value = 0;
+    let value = "";
     const addToken = (player) => {
         value = player;
     };
@@ -32,7 +32,57 @@ const gameBoard = (function () {
         console.log(boardWithCellValues);
     };
 
-    return {getBoard, addToken, printBoard}
+    const checkWinCondition = () => {
+        // Check match in rows
+        for (let i = 0; i < rows; i++) {
+            if (checkMatch(board[i])){
+                return true;
+            }
+        }
+        
+        // Check match in columns
+        for (let j = 0; j < cols; j++) {
+            const col_tokens = [];
+            for (let i = 0; i < rows; i ++) {
+                col_tokens.push(board[i][j]);
+            }
+            if (checkMatch(col_tokens)) {
+                return true;
+            }
+        }
+
+        // Check diagonals
+        const firstDiagonal = [board[0][0], board[1][1], board[2][2]];
+        if (checkMatch(firstDiagonal)) {
+            return true;
+        }
+        const secondDiagonal = [board[2][0], board[1][1], board[0][2]];
+        if (checkMatch(secondDiagonal)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    const checkMatch = (tokenList) => {
+        const [firstCell, secondCell, thirdCell] = tokenList;
+        let firstToken = firstCell.getValue();
+        let secondToken = secondCell.getValue();
+        let thirdToken = thirdCell.getValue();
+        // Check if all tokens are not empty strings and they match
+        if (
+            firstToken !== '' &&
+            secondToken !== '' &&
+            thirdToken !== '' &&
+            firstToken === secondToken &&
+            secondToken === thirdToken
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    return { getBoard, addToken, printBoard, checkWinCondition }
 
 })();
 
@@ -63,6 +113,10 @@ function GameController (playerOneName = "Player One", playerTwoName = "PlayerTw
     const playRound = (row, col) => {
         gameBoard.addToken(row, col, getActivePlayer().token);
         console.log(`${getActivePlayer().name} has added ${getActivePlayer().token} onto row ${row} and col ${col}`);
+
+        if (gameBoard.checkWinCondition()) {
+            console.log(`${getActivePlayer().name} has won!`)
+        }
 
         switchPlayerTurn();
         printNewRound();
