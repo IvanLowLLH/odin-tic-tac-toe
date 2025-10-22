@@ -116,7 +116,8 @@ function GameController (playerOneName = "Player One", playerTwoName = "Player T
         gameBoard.checkWinCondition()
 
         if (gameBoard.getWin()) {
-            console.log(`${getActivePlayer().name} has won!`)
+            console.log(`${getActivePlayer().name} has won!`);
+            displayController.playerTurnDisplay.textContent = `${getActivePlayer().name} has won!`
         }
 
         switchPlayerTurn();
@@ -146,7 +147,9 @@ function ScreenController() {
         const board = gameBoard.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        displayController.playerTurnDisplay.textContent = `${activePlayer.name}'s turn`
+        if (!gameBoard.getWin()){
+            displayController.playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
+        }
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
