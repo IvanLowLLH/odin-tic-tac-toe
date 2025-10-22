@@ -94,7 +94,7 @@ const gameBoard = (function () {
 })();
 
 const GameController = (function () {
-    const players = [
+    let players = [
         {
             name: "Player One",
             token: "X"
@@ -111,6 +111,14 @@ const GameController = (function () {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     };
     const getActivePlayer = () => activePlayer;
+
+    const restartActivePlayer = () => {
+        activePlayer = players[0];
+    }
+
+    const setPlayerName = (playerIndex, playerName) => {
+        players[playerIndex].name = playerName;
+    }
 
     const printNewRound = () => {
         gameBoard.printBoard();
@@ -134,7 +142,7 @@ const GameController = (function () {
     // Init game
     printNewRound();
 
-    return {playRound, getActivePlayer}
+    return {playRound, getActivePlayer, restartActivePlayer, setPlayerName}
 })();
 
 const displayController = (function () {
