@@ -1,5 +1,5 @@
 function Cell() {
-    let value = "";
+    let value = "X";
     const addToken = (player) => {
         value = player;
     };
@@ -128,4 +128,33 @@ function GameController (playerOneName = "Player One", playerTwoName = "PlayerTw
     return {playRound, getActivePlayer}
 }
 
-window.game = GameController();
+function ScreenController() {
+    const game = GameController();
+    const playerTurnDisplay = document.querySelector(".turn-display");
+    const boardDiv = document.querySelector(".board-container");
+
+    const updateScreen = () => {
+        // Clear board
+        boardDiv.textContent = ""
+
+        const board = gameBoard.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`
+
+        board.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                cellButton.dataset.rowIndex = rowIndex;
+                cellButton.dataset.colIndex = colIndex;
+                cellButton.textContent = cell.getValue();
+                boardDiv.appendChild(cellButton);
+            })
+        })
+    }
+
+    updateScreen();
+}
+
+ScreenController();
