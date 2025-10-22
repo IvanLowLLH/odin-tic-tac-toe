@@ -93,14 +93,14 @@ const gameBoard = (function () {
 
 })();
 
-function GameController (playerOneName = "Player One", playerTwoName = "Player Two") {
+const GameController = (function () {
     const players = [
         {
-            name: playerOneName,
+            name: "Player One",
             token: "X"
         },
         {
-            name: playerTwoName,
+            name: "Player Two",
             token: "O"
         }
     ];
@@ -135,7 +135,7 @@ function GameController (playerOneName = "Player One", playerTwoName = "Player T
     printNewRound();
 
     return {playRound, getActivePlayer}
-}
+})();
 
 const displayController = (function () {
     const playerTurnDisplay = document.querySelector(".turn-display");
@@ -144,15 +144,12 @@ const displayController = (function () {
 })();
 
 function ScreenController() {
-    const game = GameController();
-    
-
     const updateScreen = () => {
         // Clear board
         displayController.boardDiv.textContent = ""
 
         const board = gameBoard.getBoard();
-        const activePlayer = game.getActivePlayer();
+        const activePlayer = GameController.getActivePlayer();
 
         if (!gameBoard.getWin()){
             displayController.playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
@@ -182,7 +179,7 @@ function ScreenController() {
             return
         }
         // TODO: Add check if cell is already filled
-        game.playRound(selectedRow, selectedCol);
+        GameController.playRound(selectedRow, selectedCol);
         updateScreen();
     }
 
