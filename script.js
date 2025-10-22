@@ -1,5 +1,5 @@
 function Cell() {
-    let value = "X";
+    let value = "";
     const addToken = (player) => {
         value = player;
     };
