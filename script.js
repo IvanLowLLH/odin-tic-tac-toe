@@ -12,6 +12,7 @@ const gameBoard = (function () {
     const rows = 3;
     const cols = 3;
     const board = [];
+    let gameWin = false;
 
     // Create 2D board
     for (let i = 0; i < rows; i++) {
@@ -22,6 +23,7 @@ const gameBoard = (function () {
     }
 
     const getBoard = () => board;
+    const getWin = () => gameWin;
 
     const addToken = (row, col, playerToken) => {
         board[row][col].addToken(playerToken);
@@ -36,7 +38,7 @@ const gameBoard = (function () {
         // Check match in rows
         for (let i = 0; i < rows; i++) {
             if (checkMatch(board[i])){
-                return true;
+                gameWin = true;
             }
         }
         
@@ -47,21 +49,19 @@ const gameBoard = (function () {
                 col_tokens.push(board[i][j]);
             }
             if (checkMatch(col_tokens)) {
-                return true;
+                gameWin = true;
             }
         }
 
         // Check diagonals
         const firstDiagonal = [board[0][0], board[1][1], board[2][2]];
         if (checkMatch(firstDiagonal)) {
-            return true;
+            gameWin = true;
         }
         const secondDiagonal = [board[2][0], board[1][1], board[0][2]];
         if (checkMatch(secondDiagonal)) {
-            return true;
+            gameWin = true;
         }
-
-        return false;
     }
 
     const checkMatch = (tokenList) => {
@@ -82,11 +82,11 @@ const gameBoard = (function () {
         return false;
     }
 
-    return { getBoard, addToken, printBoard, checkWinCondition }
+    return { getBoard, getWin, addToken, printBoard, checkWinCondition }
 
 })();
 
-function GameController (playerOneName = "Player One", playerTwoName = "PlayerTwo") {
+function GameController (playerOneName = "Player One", playerTwoName = "Player Two") {
     const players = [
         {
             name: playerOneName,
@@ -113,8 +113,9 @@ function GameController (playerOneName = "Player One", playerTwoName = "PlayerTw
     const playRound = (row, col) => {
         gameBoard.addToken(row, col, getActivePlayer().token);
         console.log(`${getActivePlayer().name} has added ${getActivePlayer().token} onto row ${row} and col ${col}`);
+        gameBoard.checkWinCondition()
 
-        if (gameBoard.checkWinCondition()) {
+        if (gameBoard.getWin()) {
             console.log(`${getActivePlayer().name} has won!`)
         }
 
