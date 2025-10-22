@@ -154,6 +154,20 @@ function ScreenController() {
         })
     }
 
+    function clickGridBoard(event) {
+        const selectedRow = event.target.dataset.rowIndex;
+        const selectedCol = event.target.dataset.colIndex;
+
+        if (!selectedRow || !selectedCol) {
+            return
+        }
+        // TODO: Add check if cell is already filled
+        game.playRound(selectedRow, selectedCol);
+        updateScreen();
+    }
+
+    boardDiv.addEventListener("click", clickGridBoard);
+
     updateScreen();
 }
 
