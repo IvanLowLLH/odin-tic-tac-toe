@@ -128,19 +128,24 @@ function GameController (playerOneName = "Player One", playerTwoName = "PlayerTw
     return {playRound, getActivePlayer}
 }
 
-function ScreenController() {
-    const game = GameController();
+const displayController = (function () {
     const playerTurnDisplay = document.querySelector(".turn-display");
     const boardDiv = document.querySelector(".board-container");
+    return {playerTurnDisplay, boardDiv}
+})();
+
+function ScreenController() {
+    const game = GameController();
+    
 
     const updateScreen = () => {
         // Clear board
-        boardDiv.textContent = ""
+        displayController.boardDiv.textContent = ""
 
         const board = gameBoard.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`
+        displayController.playerTurnDisplay.textContent = `${activePlayer.name}'s turn`
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
@@ -149,7 +154,7 @@ function ScreenController() {
                 cellButton.dataset.rowIndex = rowIndex;
                 cellButton.dataset.colIndex = colIndex;
                 cellButton.textContent = cell.getValue();
-                boardDiv.appendChild(cellButton);
+                displayController.boardDiv.appendChild(cellButton);
             })
         })
     }
@@ -166,7 +171,7 @@ function ScreenController() {
         updateScreen();
     }
 
-    boardDiv.addEventListener("click", clickGridBoard);
+    displayController.boardDiv.addEventListener("click", clickGridBoard);
 
     updateScreen();
 }
