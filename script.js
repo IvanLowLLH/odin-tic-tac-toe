@@ -170,6 +170,10 @@ function ScreenController() {
         if (!selectedRow || !selectedCol) {
             return
         }
+        // Stop game if someone won
+        if (gameBoard.getWin()) {
+            return
+        }
         // TODO: Add check if cell is already filled
         game.playRound(selectedRow, selectedCol);
         updateScreen();
