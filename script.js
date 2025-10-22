@@ -97,11 +97,11 @@ function GameController (playerOneName = "Player One", playerTwoName = "Player T
     const players = [
         {
             name: playerOneName,
-            token: "x"
+            token: "X"
         },
         {
             name: playerTwoName,
-            token: "o"
+            token: "O"
         }
     ];
 
