@@ -89,7 +89,17 @@ const gameBoard = (function () {
         return false;
     }
 
-    return { getBoard, getWin, addToken, printBoard, checkWinCondition, checkTokenExist}
+    function restartBoard () {
+
+        board.forEach(row => {
+            row.forEach(cell => {
+                cell.addToken("");
+            })
+        })
+        gameWin = false;
+    }
+
+    return { getBoard, getWin, addToken, printBoard, checkWinCondition, checkTokenExist, restartBoard}
 
 })();
 
@@ -191,7 +201,15 @@ function ScreenController() {
         updateScreen();
     }
 
+    function restartGame() {
+        gameBoard.restartBoard();
+        GameController.restartActivePlayer();
+        updateScreen();
+    }
+
     displayController.boardDiv.addEventListener("click", clickGridBoard);
+    const restartButton = document.querySelector("#restart-btn");
+    restartButton.addEventListener("click", restartGame)
 
     updateScreen();
 }
