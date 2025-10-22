@@ -29,6 +29,13 @@ const gameBoard = (function () {
         board[row][col].addToken(playerToken);
     };
 
+    const checkTokenExist = (row, col) => {
+        const cell = board[row][col];
+        if (cell.getValue() !== "") {
+            return true;
+        }
+    }
+
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()));
         console.log(boardWithCellValues);
@@ -82,7 +89,7 @@ const gameBoard = (function () {
         return false;
     }
 
-    return { getBoard, getWin, addToken, printBoard, checkWinCondition }
+    return { getBoard, getWin, addToken, printBoard, checkWinCondition, checkTokenExist}
 
 })();
 
@@ -171,7 +178,7 @@ function ScreenController() {
             return
         }
         // Stop game if someone won
-        if (gameBoard.getWin()) {
+        if (gameBoard.getWin() || gameBoard.checkTokenExist(selectedRow, selectedCol)) {
             return
         }
         // TODO: Add check if cell is already filled
