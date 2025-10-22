@@ -12,3 +12,16 @@ html {
     display: flex;
     gap: 20px;
 }
+
+.board-container {
+    display: grid;
+    height: 500px;
+    width: 500px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border: 1px solid black;
+}
+
+.cell {
+    font-size: 32px;
+}
