@@ -41,33 +41,33 @@ const gameBoard = (function () {
         console.log(boardWithCellValues);
     };
 
-    const checkWinCondition = () => {
-        // Check match in rows
-        for (let i = 0; i < rows; i++) {
-            if (checkMatch(board[i])){
-                gameWin = true;
-            }
+    const checkWinCondition = (rowIndex, colIndex) => {
+        // Check match in clicked row
+        if (checkMatch(board[rowIndex])){
+            gameWin = true;
+            return;
         }
         
-        // Check match in columns
-        for (let j = 0; j < cols; j++) {
-            const col_tokens = [];
-            for (let i = 0; i < rows; i ++) {
-                col_tokens.push(board[i][j]);
-            }
-            if (checkMatch(col_tokens)) {
-                gameWin = true;
-            }
+        // Check match in clicked column
+        const col_tokens = [];
+        for (let i = 0; i < rows; i ++) {
+            col_tokens.push(board[i][colIndex]);
+        }
+        if (checkMatch(col_tokens)) {
+            gameWin = true;
+            return;
         }
 
         // Check diagonals
         const firstDiagonal = [board[0][0], board[1][1], board[2][2]];
         if (checkMatch(firstDiagonal)) {
             gameWin = true;
+            return;
         }
         const secondDiagonal = [board[2][0], board[1][1], board[0][2]];
         if (checkMatch(secondDiagonal)) {
             gameWin = true;
+            return;
         }
     }
 
@@ -138,7 +138,7 @@ const GameController = (function () {
     const playRound = (row, col) => {
         gameBoard.addToken(row, col, getActivePlayer().token);
         console.log(`${getActivePlayer().name} has added ${getActivePlayer().token} onto row ${row} and col ${col}`);
-        gameBoard.checkWinCondition()
+        gameBoard.checkWinCondition(row, col)
 
         if (gameBoard.getWin()) {
             return { gameOver: true, winner: `${getActivePlayer().name}` }
