@@ -141,12 +141,13 @@ const GameController = (function () {
         gameBoard.checkWinCondition()
 
         if (gameBoard.getWin()) {
-            console.log(`${getActivePlayer().name} has won!`);
-            displayController.playerTurnDisplay.textContent = `${getActivePlayer().name} has won!`
+            return { gameOver: true, winner: `${getActivePlayer().name}` }
         }
-
-        switchPlayerTurn();
-        printNewRound();
+        else {
+            switchPlayerTurn();
+            printNewRound();
+            return { gameOver: false, winner: `` }
+        }
     };
 
     // Init game
@@ -155,22 +156,20 @@ const GameController = (function () {
     return {playRound, getActivePlayer, restartActivePlayer, setPlayerName}
 })();
 
-const displayController = (function () {
-    const playerTurnDisplay = document.querySelector(".turn-display");
-    const boardDiv = document.querySelector(".board-container");
-    return {playerTurnDisplay, boardDiv}
-})();
 
 function ScreenController() {
+    const playerTurnDisplay = document.querySelector(".turn-display");
+    const boardDiv = document.querySelector(".board-container");
+
     const updateScreen = () => {
         // Clear board
-        displayController.boardDiv.textContent = ""
+        boardDiv.textContent = ""
 
         const board = gameBoard.getBoard();
         const activePlayer = GameController.getActivePlayer();
 
         if (!gameBoard.getWin()){
-            displayController.playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
+            playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
         }
 
         board.forEach((row, rowIndex) => {
@@ -180,7 +179,7 @@ function ScreenController() {
                 cellButton.dataset.rowIndex = rowIndex;
                 cellButton.dataset.colIndex = colIndex;
                 cellButton.textContent = cell.getValue();
-                displayController.boardDiv.appendChild(cellButton);
+                boardDiv.appendChild(cellButton);
             })
         })
     }
@@ -197,7 +196,10 @@ function ScreenController() {
             return
         }
         // TODO: Add check if cell is already filled
-        GameController.playRound(selectedRow, selectedCol);
+        const gameStatus = GameController.playRound(selectedRow, selectedCol);
+        if (gameStatus.gameOver) {
+            playerTurnDisplay.textContent = `${gameStatus.winner} has won!`
+        }
         updateScreen();
     }
 
@@ -207,7 +209,7 @@ function ScreenController() {
         updateScreen();
     }
 
-    displayController.boardDiv.addEventListener("click", clickGridBoard);
+    boardDiv.addEventListener("click", clickGridBoard);
     const restartButton = document.querySelector("#restart-btn");
     restartButton.addEventListener("click", restartGame)
 
