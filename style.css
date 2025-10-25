@@ -44,3 +44,13 @@ html {
 #restart-btn {
     font-size: 24px;
 }
+
+.cell[data-win="true"] {
+    animation: glow-pop 1s ease-in-out infinite alternate;
+    box-shadow:
+        inset 0 0 10px #ffb84d,
+        /* inner glow */
+        0 0 20px #ff8c00;
+    /* soft outer glow */
+    transform: scale(1.05);
+}
