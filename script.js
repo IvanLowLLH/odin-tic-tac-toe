@@ -161,16 +161,10 @@ function ScreenController() {
     const playerTurnDisplay = document.querySelector(".turn-display");
     const boardDiv = document.querySelector(".board-container");
 
-    const updateScreen = () => {
+    const generateBoard = () => {
         // Clear board
         boardDiv.textContent = ""
-
         const board = gameBoard.getBoard();
-        const activePlayer = GameController.getActivePlayer();
-
-        if (!gameBoard.getWin()){
-            playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
-        }
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
@@ -182,6 +176,18 @@ function ScreenController() {
                 boardDiv.appendChild(cellButton);
             })
         })
+    }
+
+    const updateScreen = (rowIndex, colIndex) => {
+        // Update display
+        const activePlayer = GameController.getActivePlayer();
+        if (!gameBoard.getWin()){
+            playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
+        }
+        // Update rendered board
+        const board = gameBoard.getBoard();
+        const selectedButton = document.querySelector(`[data-row-index="${rowIndex}"][data-col-index="${colIndex}"]`);
+        selectedButton.textContent = board[rowIndex][colIndex].getValue();
     }
 
     function clickGridBoard(event) {
@@ -200,20 +206,20 @@ function ScreenController() {
         if (gameStatus.gameOver) {
             playerTurnDisplay.textContent = `${gameStatus.winner} has won!`
         }
-        updateScreen();
+        updateScreen(selectedRow, selectedCol);
     }
 
     function restartGame() {
         gameBoard.restartBoard();
         GameController.restartActivePlayer();
-        updateScreen();
+        generateBoard();
     }
 
     boardDiv.addEventListener("click", clickGridBoard);
     const restartButton = document.querySelector("#restart-btn");
     restartButton.addEventListener("click", restartGame)
 
-    updateScreen();
+    generateBoard();
 }
 
 ScreenController();
