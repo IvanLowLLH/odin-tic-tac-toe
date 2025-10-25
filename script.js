@@ -190,19 +190,27 @@ function ScreenController() {
             })
         })
         // Initial player display
-        const activePlayer = GameController.getActivePlayer();
-        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`
+        updatePlayerStatusDisplay();
     }
 
-    const updateScreen = (rowIndex, colIndex) => {
-        // Update display
+    function updatePlayerStatusDisplay() {
         const activePlayer = GameController.getActivePlayer();
-        if (gameBoard.checkBoardFilled()) {
+        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
+    }
+
+    function updateStatusDisplay (gameStatus) {
+        if (gameStatus.gameOver) {
+            playerTurnDisplay.textContent = `${gameStatus.winner} has won!`;
+        }
+        else if (gameBoard.checkBoardFilled()) {
             playerTurnDisplay.textContent = `Draw! Restart game.`;
         }
-        else if (!gameBoard.getWin()){
-            playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
+        else {
+            updatePlayerStatusDisplay();
         }
+    }
+
+    const updateBoardDisplay = (rowIndex, colIndex) => {
         // Update rendered board
         const board = gameBoard.getBoard();
         const selectedButton = document.querySelector(`[data-row-index="${rowIndex}"][data-col-index="${colIndex}"]`);
@@ -220,14 +228,9 @@ function ScreenController() {
         if (gameBoard.getWin() || gameBoard.checkTokenExist(selectedRow, selectedCol)) {
             return
         }
-        if (gameBoard.checkBoardFilled()) {
-            playerTurnDisplay.textContent = `Draw! Restart game.`;
-        }
         const gameStatus = GameController.playRound(selectedRow, selectedCol);
-        if (gameStatus.gameOver) {
-            playerTurnDisplay.textContent = `${gameStatus.winner} has won!`
-        }
-        updateScreen(selectedRow, selectedCol);
+        updateStatusDisplay(gameStatus);
+        updateBoardDisplay(selectedRow, selectedCol);
     }
 
     function restartGame() {
