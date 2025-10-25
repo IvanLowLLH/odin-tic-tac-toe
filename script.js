@@ -12,6 +12,7 @@ const gameBoard = (function () {
     const rows = 3;
     const cols = 3;
     const board = [];
+    let totalEmptyCells = rows * cols;
     let gameWin = false;
 
     // Create 2D board
@@ -27,6 +28,7 @@ const gameBoard = (function () {
 
     const addToken = (row, col, playerToken) => {
         board[row][col].addToken(playerToken);
+        totalEmptyCells--;
     };
 
     const checkTokenExist = (row, col) => {
@@ -89,6 +91,15 @@ const gameBoard = (function () {
         return false;
     }
 
+    function checkBoardFilled () {
+        if (totalEmptyCells === 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     function restartBoard () {
 
         board.forEach(row => {
@@ -96,10 +107,12 @@ const gameBoard = (function () {
                 cell.addToken("");
             })
         })
+        totalEmptyCells = rows * cols;
         gameWin = false;
     }
 
-    return { getBoard, getWin, addToken, printBoard, checkWinCondition, checkTokenExist, restartBoard}
+    return { getBoard, getWin, addToken, printBoard, 
+        checkWinCondition, checkTokenExist, checkBoardFilled, restartBoard}
 
 })();
 
@@ -176,12 +189,18 @@ function ScreenController() {
                 boardDiv.appendChild(cellButton);
             })
         })
+        // Initial player display
+        const activePlayer = GameController.getActivePlayer();
+        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`
     }
 
     const updateScreen = (rowIndex, colIndex) => {
         // Update display
         const activePlayer = GameController.getActivePlayer();
-        if (!gameBoard.getWin()){
+        if (gameBoard.checkBoardFilled()) {
+            playerTurnDisplay.textContent = `Draw! Restart game.`;
+        }
+        else if (!gameBoard.getWin()){
             playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
         }
         // Update rendered board
@@ -197,11 +216,13 @@ function ScreenController() {
         if (!selectedRow || !selectedCol) {
             return
         }
-        // Stop game if someone won
+        // Stop game if someone won or token already filled
         if (gameBoard.getWin() || gameBoard.checkTokenExist(selectedRow, selectedCol)) {
             return
         }
-        // TODO: Add check if cell is already filled
+        if (gameBoard.checkBoardFilled()) {
+            playerTurnDisplay.textContent = `Draw! Restart game.`;
+        }
         const gameStatus = GameController.playRound(selectedRow, selectedCol);
         if (gameStatus.gameOver) {
             playerTurnDisplay.textContent = `${gameStatus.winner} has won!`
