@@ -99,7 +99,7 @@ const gameBoard = (function () {
         return false;
     }
 
-    function checkBoardFilled () {
+    const checkBoardFilled = () => {
         if (totalEmptyCells === 0) {
             return true;
         }
@@ -108,7 +108,7 @@ const gameBoard = (function () {
         }
     }
 
-    function restartBoard () {
+    const restartBoard = () => {
 
         board.forEach(row => {
             row.forEach(cell => {
@@ -182,6 +182,11 @@ function ScreenController() {
     const playerTurnDisplay = document.querySelector(".turn-display");
     const boardDiv = document.querySelector(".board-container");
 
+    const updatePlayerStatusDisplay = () => {
+        const activePlayer = GameController.getActivePlayer();
+        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
+    }
+
     const generateBoard = () => {
         // Clear board
         boardDiv.textContent = ""
@@ -202,12 +207,7 @@ function ScreenController() {
         updatePlayerStatusDisplay();
     }
 
-    function updatePlayerStatusDisplay() {
-        const activePlayer = GameController.getActivePlayer();
-        playerTurnDisplay.textContent = `${activePlayer.name}'s turn`;
-    }
-
-    function updateStatusDisplay (gameStatus) {
+    const updateStatusDisplay = (gameStatus) => {
         if (gameStatus.gameOver) {
             playerTurnDisplay.textContent = `${gameStatus.winner} has won!`;
         }
@@ -219,17 +219,7 @@ function ScreenController() {
         }
     }
 
-    const updateBoardDisplay = (gameStatus, rowIndex, colIndex) => {
-        // Update rendered board
-        const board = gameBoard.getBoard();
-        const selectedButton = document.querySelector(`[data-row-index="${rowIndex}"][data-col-index="${colIndex}"]`);
-        selectedButton.textContent = board[rowIndex][colIndex].getValue();
-        if (gameStatus.gameOver) {
-            updateWinCells();
-        }
-    }
-
-    function updateWinCells() {
+    const updateWinCells = () => {
         // Find cells with winStatus = true
         const board = gameBoard.getBoard();
         const winIndices = [];
@@ -247,7 +237,17 @@ function ScreenController() {
         })
     }
 
-    function clickGridBoard(event) {
+    const updateBoardDisplay = (gameStatus, rowIndex, colIndex) => {
+        // Update rendered board
+        const board = gameBoard.getBoard();
+        const selectedButton = document.querySelector(`[data-row-index="${rowIndex}"][data-col-index="${colIndex}"]`);
+        selectedButton.textContent = board[rowIndex][colIndex].getValue();
+        if (gameStatus.gameOver) {
+            updateWinCells();
+        }
+    }
+
+    const clickGridBoard = (event) => {
         const selectedRow = event.target.dataset.rowIndex;
         const selectedCol = event.target.dataset.colIndex;
 
@@ -263,7 +263,7 @@ function ScreenController() {
         updateBoardDisplay(gameStatus, selectedRow, selectedCol);
     }
 
-    function restartGame() {
+    const restartGame = () => {
         gameBoard.restartBoard();
         GameController.restartActivePlayer();
         generateBoard();
